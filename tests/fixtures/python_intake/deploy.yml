@@ -1,0 +1,4 @@
+services:
+  web:
+    command: python server.py
+    restart: on-failure

@@ -1,0 +1,92 @@
+{
+  "test": "independent forward test: TypeScript jobs",
+  "observed_at": "2026-10-02T13:13:15.562226+08:00",
+  "skill_read": "skills/architecture-audit-canvas/SKILL.md and its three referenced guides",
+  "inputs_read": [
+    "project AGENTS.md",
+    "project MEMORY.md",
+    "fixture README.md",
+    "fixture api.ts",
+    "fixture queue.ts",
+    "fixture worker.ts",
+    "fixture config.yml"
+  ],
+  "forbidden_inputs_read": false,
+  "target_executed": false,
+  "network_used": false,
+  "target_files_changed": false,
+  "skill_files_changed": false,
+  "review_status": "draft",
+  "reviewer": null,
+  "browser_verified": false,
+  "mechanical_attempts": [
+    {
+      "tool": "collect_snapshot.py",
+      "exit_code": 0,
+      "result": "5 files, 0 exclusions, snapshot 912d11741f8a"
+    },
+    {
+      "tool": "validate_artifacts.py (model)",
+      "exit_code": 0,
+      "valid": true,
+      "stale": false
+    },
+    {
+      "tool": "build_canvas.py",
+      "exit_code": 0,
+      "result": "Built 6 files, plus manifest.json"
+    },
+    {
+      "tool": "validate_artifacts.py (delivery)",
+      "exit_code": 0,
+      "valid": true,
+      "stale": false
+    },
+    {
+      "tool": "check_drift.py",
+      "exit_code": 0,
+      "stale": false,
+      "changed": [],
+      "added": [],
+      "removed": []
+    },
+    {
+      "tool": "ad hoc static artifact inspection",
+      "exit_code": 1,
+      "result": "Inspection incorrectly asserted that HTML contains fixture directory slug typescript_jobs; actual user-facing title is TypeScript Jobs. This was an assertion error in inspection, not a skill/tool failure."
+    },
+    {
+      "tool": "ad hoc corrected static artifact inspection",
+      "exit_code": 0,
+      "result": "Expected authored title, exact source set and no external src/href URLs verified."
+    }
+  ],
+  "artifact_inspection": {
+    "report_and_questions_read": true,
+    "model_and_canvas_data_read": true,
+    "html_embedded_data_present": true,
+    "html_external_src_href_urls": [],
+    "source_file_set_verified": true,
+    "credential_or_customer_content_seen": false,
+    "inspection_limit": "Static content inspection only; runtime browser network/offline and interactions not exercised here."
+  },
+  "observed_skill_limits": [
+    {
+      "severity": "usability",
+      "fact": "All three TypeScript modules are mechanically categorized frontend, including api.ts/queue.ts/worker.ts; actual content is job-processing sample, not browser frontend.",
+      "evidence": "delivery/canvas-data.json modules[*].category",
+      "impact": "Module directory taxonomy may mislead if treated as architectural responsibility; business views retain manually evidenced roles."
+    },
+    {
+      "severity": "documented_limit",
+      "fact": "Lexical symbol index finds submit/take/work but does not index arrow-function enqueue; all TS imports/calls lists are empty.",
+      "evidence": "delivery/canvas-data.json modules[*].symbols/imports",
+      "impact": "Module drilldown alone does not cover all functions/calls; the authored view includes enqueue with exact refs. This is disclosed by skill index_limit, not reported as full TypeScript semantic parsing."
+    }
+  ],
+  "blocking_issues": [],
+  "remaining_acceptance": [
+    "Independent semantic reviewer has not reviewed this authored model; leave draft.",
+    "Parent to perform real browser interactions, screenshots and offline reload verification."
+  ]
+}

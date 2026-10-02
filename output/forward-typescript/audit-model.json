@@ -1,0 +1,574 @@
+{
+  "schema_version": 1,
+  "snapshot_id": "912d11741f8af748ba77d2c8b3d03b8eb86565cfeab2ed82e812b66f6a15eb08",
+  "title": "TypeScript Jobs · 提交与后台处理剖析",
+  "summary": "这个5文件样例是函数调用加进程内数组，并非已经启动的任务服务。submit通过同步校验入队并立即接受；外部调用work才出队一次并等待注入的deliver。YAML的30秒未连接调度器，持久化与失败恢复未实现。所有结论来自静态阅读，没有执行目标或观察运行现场。",
+  "review": {
+    "status": "draft"
+  },
+  "reviewed_modules": [
+    "README.md",
+    "api.ts",
+    "config.yml",
+    "queue.ts",
+    "worker.ts"
+  ],
+  "limitations": [
+    "未执行目标代码、未联网、未调用任何deliver；没有运行现场证据。",
+    "样例没有package.json、宿主启动与回调实现，不能确认构建环境、真实HTTP路径、调度频率或外部目标。",
+    "TypeScript符号仅有词法候选索引；业务视图由逐行静态审查建立，不是完整动态调用图。",
+    "没有另一独立审查者复核本模型，review保持draft；浏览器交互验收由主代理统一完成，本轮未声称通过。"
+  ],
+  "views": [
+    {
+      "id": "submission-processing",
+      "title": "提交 → 入队 → 单次处理",
+      "summary": "边区分调用与数据返回方向。顺序是submit入队、外部另行调用work、先出队后投递；数组不会自行触发处理。",
+      "nodes": [
+        {
+          "id": "submit",
+          "label": "提交：submit",
+          "kind": "api",
+          "module": "api.ts",
+          "status": "confirmed",
+          "detail": "函数接收 payload，只检查 reference 真值；缺失时抛错，否则同步调用 enqueue。未提供 HTTP 路由、身份校验或网络服务装配。",
+          "refs": [
+            {
+              "path": "api.ts",
+              "line": 3,
+              "end": 6,
+              "type": "code"
+            }
+          ],
+          "evidence_note": "函数接收 payload，只检查 reference 真值；缺失时抛错，否则同步调用 enqueue。未提供 HTTP 路由、身份校验或网络服务装配。"
+        },
+        {
+          "id": "enqueue",
+          "label": "入队：enqueue",
+          "kind": "service",
+          "module": "queue.ts",
+          "status": "confirmed",
+          "detail": "将传入对象 push 到模块级 pending 数组，立即返回 accepted:true；返回不代表后台投递成功。",
+          "refs": [
+            {
+              "path": "queue.ts",
+              "line": 1,
+              "end": 6,
+              "type": "code"
+            }
+          ],
+          "evidence_note": "将传入对象 push 到模块级 pending 数组，立即返回 accepted:true；返回不代表后台投递成功。"
+        },
+        {
+          "id": "pending",
+          "label": "进程内 pending 数组",
+          "kind": "store",
+          "module": "queue.ts",
+          "status": "confirmed",
+          "detail": "模块作用域初始化空数组；enqueue 追加、take 移除队头。本样例未提供磁盘、数据库或消息中间件。",
+          "refs": [
+            {
+              "path": "queue.ts",
+              "line": 1,
+              "end": 10,
+              "type": "code"
+            }
+          ],
+          "evidence_note": "模块作用域初始化空数组；enqueue 追加、take 移除队头。本样例未提供磁盘、数据库或消息中间件。"
+        },
+        {
+          "id": "take",
+          "label": "出队：take",
+          "kind": "service",
+          "module": "queue.ts",
+          "status": "confirmed",
+          "detail": "每次执行 pending.shift()，移除并返回一个队头对象；空数组返回 undefined。没有任务状态或领取租约。",
+          "refs": [
+            {
+              "path": "queue.ts",
+              "line": 8,
+              "end": 10,
+              "type": "code"
+            }
+          ],
+          "evidence_note": "每次执行 pending.shift()，移除并返回一个队头对象；空数组返回 undefined。没有任务状态或领取租约。"
+        },
+        {
+          "id": "work",
+          "label": "单次处理：work",
+          "kind": "worker",
+          "module": "worker.ts",
+          "status": "confirmed",
+          "detail": "调用 take 一次；有 item 才 await deliver(item)。没有循环、计时器、catch 或重试；空队列直接结束。",
+          "refs": [
+            {
+              "path": "worker.ts",
+              "line": 3,
+              "end": 6,
+              "type": "code"
+            }
+          ],
+          "evidence_note": "调用 take 一次；有 item 才 await deliver(item)。没有循环、计时器、catch 或重试；空队列直接结束。"
+        },
+        {
+          "id": "deliver",
+          "label": "注入的 deliver 回调",
+          "kind": "external",
+          "module": "worker.ts",
+          "status": "confirmed",
+          "detail": "work 的函数参数声明为返回 Promise<void> 的回调；当前文件只证明调用与等待，不证明具体投递目标或副作用。",
+          "refs": [
+            {
+              "path": "worker.ts",
+              "line": 3,
+              "end": 5,
+              "type": "code"
+            }
+          ],
+          "evidence_note": "work 的函数参数声明为返回 Promise<void> 的回调；当前文件只证明调用与等待，不证明具体投递目标或副作用。"
+        }
+      ],
+      "edges": [
+        {
+          "id": "submit-enqueue",
+          "from": "submit",
+          "to": "enqueue",
+          "label": "校验通过后同步入队",
+          "kind": "call",
+          "relation": "direct",
+          "status": "confirmed",
+          "detail": "submit 第5行调用 enqueue(payload)，第1行从 queue 引入该函数。",
+          "refs": [
+            {
+              "path": "api.ts",
+              "line": 1,
+              "end": 1,
+              "type": "code"
+            },
+            {
+              "path": "api.ts",
+              "line": 3,
+              "end": 5,
+              "type": "code"
+            }
+          ],
+          "evidence_note": "submit 第5行调用 enqueue(payload)，第1行从 queue 引入该函数。"
+        },
+        {
+          "id": "enqueue-pending",
+          "from": "enqueue",
+          "to": "pending",
+          "label": "push 原对象",
+          "kind": "write",
+          "relation": "direct",
+          "status": "confirmed",
+          "detail": "enqueue 第4行将 payload 追加到 pending；未复制对象或持久化。",
+          "refs": [
+            {
+              "path": "queue.ts",
+              "line": 1,
+              "end": 5,
+              "type": "code"
+            }
+          ],
+          "evidence_note": "enqueue 第4行将 payload 追加到 pending；未复制对象或持久化。"
+        },
+        {
+          "id": "pending-take",
+          "from": "pending",
+          "to": "take",
+          "label": "shift 返回并移除队头",
+          "kind": "data",
+          "relation": "direct",
+          "status": "confirmed",
+          "detail": "take 的返回值直接来自 pending.shift()，这是数组到领取函数的数据流，不代表数组主动调度 worker。",
+          "refs": [
+            {
+              "path": "queue.ts",
+              "line": 8,
+              "end": 10,
+              "type": "code"
+            }
+          ],
+          "evidence_note": "take 的返回值直接来自 pending.shift()，这是数组到领取函数的数据流，不代表数组主动调度 worker。"
+        },
+        {
+          "id": "take-work",
+          "from": "take",
+          "to": "work",
+          "label": "领取结果赋给 item",
+          "kind": "data",
+          "relation": "direct",
+          "status": "confirmed",
+          "detail": "work 第4行调用 take 并将返回值赋给 item；take 的返回来源是数组 shift。此边显示数据返回方向。",
+          "refs": [
+            {
+              "path": "worker.ts",
+              "line": 1,
+              "end": 5,
+              "type": "code"
+            },
+            {
+              "path": "queue.ts",
+              "line": 8,
+              "end": 10,
+              "type": "code"
+            }
+          ],
+          "evidence_note": "work 第4行调用 take 并将返回值赋给 item；take 的返回来源是数组 shift。此边显示数据返回方向。"
+        },
+        {
+          "id": "work-take",
+          "from": "work",
+          "to": "take",
+          "label": "每次 work 调用一次",
+          "kind": "call",
+          "relation": "direct",
+          "status": "confirmed",
+          "detail": "work 第4行实际执行 take()；外部如何调用 work 在样例中未知。",
+          "refs": [
+            {
+              "path": "worker.ts",
+              "line": 1,
+              "end": 4,
+              "type": "code"
+            }
+          ],
+          "evidence_note": "work 第4行实际执行 take()；外部如何调用 work 在样例中未知。"
+        },
+        {
+          "id": "work-deliver",
+          "from": "work",
+          "to": "deliver",
+          "label": "非空时 await 回调",
+          "kind": "call",
+          "relation": "direct",
+          "status": "confirmed",
+          "detail": "worker 第5行检查 item，随后 await deliver(item)；无回调实现可供审查。",
+          "refs": [
+            {
+              "path": "worker.ts",
+              "line": 3,
+              "end": 6,
+              "type": "code"
+            }
+          ],
+          "evidence_note": "worker 第5行检查 item，随后 await deliver(item)；无回调实现可供审查。"
+        },
+        {
+          "id": "submit-pending",
+          "from": "submit",
+          "to": "pending",
+          "label": "跨模块提交路径",
+          "kind": "data",
+          "relation": "aggregate",
+          "status": "confirmed",
+          "detail": "submit 调用 enqueue，enqueue 将 payload 放入 pending。此为两个调用位置组合的汇总路径，不是 submit 直接访问数组。",
+          "refs": [
+            {
+              "path": "api.ts",
+              "line": 5,
+              "end": 5,
+              "type": "code"
+            },
+            {
+              "path": "queue.ts",
+              "line": 3,
+              "end": 5,
+              "type": "code"
+            }
+          ],
+          "evidence_note": "submit 调用 enqueue，enqueue 将 payload 放入 pending。此为两个调用位置组合的汇总路径，不是 submit 直接访问数组。",
+          "via": [
+            "enqueue"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "startup-boundaries",
+      "title": "配置与运行：尚缺的连接",
+      "summary": "配置字面量不等于已经生效的调度。所有缺失装配关系标为待确认。",
+      "nodes": [
+        {
+          "id": "config",
+          "label": "YAML：启用 / 30 秒",
+          "kind": "config",
+          "module": "config.yml",
+          "status": "confirmed",
+          "detail": "配置文件声明 worker.enabled=true、schedule_seconds=30；这只证明配置字面量存在，不证明已读取或执行。",
+          "refs": [
+            {
+              "path": "config.yml",
+              "line": 1,
+              "end": 3,
+              "type": "config"
+            }
+          ],
+          "evidence_note": "配置文件声明 worker.enabled=true、schedule_seconds=30；这只证明配置字面量存在，不证明已读取或执行。"
+        },
+        {
+          "id": "bootstrap",
+          "label": "启动与调度装配：待确认",
+          "kind": "unknown",
+          "module": null,
+          "status": "unknown",
+          "detail": "提供的5个文件中没有配置读取器、服务启动入口或定时器。",
+          "refs": [
+            {
+              "path": "README.md",
+              "line": 3,
+              "end": 4,
+              "type": "document"
+            }
+          ],
+          "uncertainty": "需要实际 bootstrap、配置解析及调度注册实现；不能从 YAML 推断每30秒执行。"
+        },
+        {
+          "id": "ops-work",
+          "label": "worker 函数",
+          "kind": "worker",
+          "module": "worker.ts",
+          "status": "confirmed",
+          "detail": "仅定义 work 并导出；没有在此文件自调用。",
+          "refs": [
+            {
+              "path": "worker.ts",
+              "line": 3,
+              "end": 6,
+              "type": "code"
+            }
+          ],
+          "evidence_note": "仅定义 work 并导出；没有在此文件自调用。"
+        },
+        {
+          "id": "delivery-target",
+          "label": "投递实现 / 外部目标：待确认",
+          "kind": "unknown",
+          "module": null,
+          "status": "unknown",
+          "detail": "仅知道 work 接收回调，没有提供回调函数体。",
+          "refs": [
+            {
+              "path": "worker.ts",
+              "line": 3,
+              "end": 5,
+              "type": "code"
+            }
+          ],
+          "uncertainty": "需要调用 work 的装配处及 deliver 实现，才能确认目标、超时、幂等和鉴权。"
+        }
+      ],
+      "edges": [
+        {
+          "id": "config-bootstrap",
+          "from": "config",
+          "to": "bootstrap",
+          "label": "是否被读取？",
+          "kind": "config",
+          "relation": "direct",
+          "status": "unknown",
+          "detail": "无可确认的配置读取关系。",
+          "refs": [
+            {
+              "path": "config.yml",
+              "line": 1,
+              "end": 3,
+              "type": "config"
+            },
+            {
+              "path": "README.md",
+              "line": 4,
+              "end": 4,
+              "type": "document"
+            }
+          ],
+          "uncertainty": "当前快照没有配置读取代码。"
+        },
+        {
+          "id": "bootstrap-work",
+          "from": "bootstrap",
+          "to": "ops-work",
+          "label": "是否定时调用？",
+          "kind": "schedule",
+          "relation": "direct",
+          "status": "unknown",
+          "detail": "没有调度调用位置，30秒不是已证实的实际频率。",
+          "refs": [
+            {
+              "path": "README.md",
+              "line": 4,
+              "end": 4,
+              "type": "document"
+            },
+            {
+              "path": "worker.ts",
+              "line": 3,
+              "end": 6,
+              "type": "code"
+            }
+          ],
+          "uncertainty": "缺少调度器注册、启动过程及运行证据。"
+        },
+        {
+          "id": "ops-work-target",
+          "from": "ops-work",
+          "to": "delivery-target",
+          "label": "回调绑定对象？",
+          "kind": "call",
+          "relation": "direct",
+          "status": "unknown",
+          "detail": "代码只证明调用形参 deliver，无法定位具体实现。",
+          "refs": [
+            {
+              "path": "worker.ts",
+              "line": 3,
+              "end": 5,
+              "type": "code"
+            }
+          ],
+          "uncertainty": "回调实现和依赖注入位置未提供。"
+        }
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "id": "F1",
+      "severity": "P1",
+      "title": "已接收任务仅存在进程内存",
+      "fact": "queue.ts 的 pending 是模块级空数组，enqueue 只执行 push 后返回 accepted:true。当前样例全部存储操作都落在该数组；没有持久化实现。",
+      "impact": "如果承载该模块的进程退出，未处理任务没有本样例可恢复的记录。accepted 只表示入内存，不能被业务理解为可靠交付。",
+      "recommendation": "先明确 accepted 的业务承诺。若要求可靠受理，持久化任务后再回执，并验证重启后的恢复；本次未运行故障实验。",
+      "refs": [
+        {
+          "path": "queue.ts",
+          "line": 1,
+          "end": 10,
+          "type": "code"
+        },
+        {
+          "path": "api.ts",
+          "line": 3,
+          "end": 6,
+          "type": "code"
+        }
+      ]
+    },
+    {
+      "id": "F2",
+      "severity": "P1",
+      "title": "先移除队列再执行投递，失败没有本地恢复路径",
+      "fact": "work 先调用 take；take 通过 shift 删除队头。之后才 await deliver，work 中没有 catch、重新入队、完成状态或失败状态。",
+      "impact": "deliver 抛错、Promise拒绝或进程在出队后中断时，当前样例没有恢复该对象的路径；重新调用 work 会领取下一项。外部调用方是否补偿仍未知。",
+      "recommendation": "采用明确的待处理/处理中/完成/失败状态，成功后确认；补偿、重试与幂等需要结合真实 deliver 副作用设计，不能盲目重投。",
+      "refs": [
+        {
+          "path": "queue.ts",
+          "line": 8,
+          "end": 10,
+          "type": "code"
+        },
+        {
+          "path": "worker.ts",
+          "line": 3,
+          "end": 6,
+          "type": "code"
+        }
+      ]
+    },
+    {
+      "id": "F3",
+      "severity": "P2",
+      "title": "30秒后台处理只停留在配置意图",
+      "fact": "config.yml 声明 schedule_seconds:30；README 明说没有 scheduler bootstrap。worker.ts 仅导出单次 work 函数，提供文件中没有配置消费或定时调用。",
+      "impact": "单独提交后不能据此证明任务会自动处理。README与代码一致；这是样例实现边界，不是已经证实的生产调度故障。",
+      "recommendation": "补充实际宿主和调度装配证据；如确需常驻处理，实现并验证启动、停止、并发和空队列行为，再对外承诺处理延迟。",
+      "refs": [
+        {
+          "path": "config.yml",
+          "line": 1,
+          "end": 3,
+          "type": "config"
+        },
+        {
+          "path": "README.md",
+          "line": 3,
+          "end": 4,
+          "type": "document"
+        },
+        {
+          "path": "worker.ts",
+          "line": 3,
+          "end": 6,
+          "type": "code"
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "question": "谁实际调用 submit 和 work，config.yml 在哪里加载？",
+      "why": "决定这是库样例、常驻服务还是定时任务，当前不能确认HTTP入口或30秒调度。",
+      "owner": "technical",
+      "next_evidence": "提供宿主启动文件、路由装配和调度器注册代码。",
+      "refs": [
+        {
+          "path": "api.ts",
+          "line": 3,
+          "end": 6,
+          "type": "code"
+        },
+        {
+          "path": "worker.ts",
+          "line": 3,
+          "end": 6,
+          "type": "code"
+        },
+        {
+          "path": "config.yml",
+          "line": 1,
+          "end": 3,
+          "type": "config"
+        }
+      ]
+    },
+    {
+      "id": "Q2",
+      "question": "deliver 的真实实现、超时、失败分类和幂等约定是什么？",
+      "why": "回调可能访问任何目标。缺少实现，不能判断外部调用超时、重复副作用或安全边界。",
+      "owner": "technical",
+      "next_evidence": "提供回调绑定位置和实现；无需提供凭据值。",
+      "refs": [
+        {
+          "path": "worker.ts",
+          "line": 3,
+          "end": 5,
+          "type": "code"
+        }
+      ]
+    },
+    {
+      "id": "Q3",
+      "question": "accepted 要承诺“已入内存”还是“可靠受理”，reference 重复时业务如何处理？",
+      "why": "现有 API 不返任务ID或状态，enqueue没有按reference去重；是否需要持久化、幂等与状态查询取决于业务契约。",
+      "owner": "business",
+      "next_evidence": "确认受理承诺、重复提交口径及允许丢失/重试边界。",
+      "refs": [
+        {
+          "path": "api.ts",
+          "line": 3,
+          "end": 6,
+          "type": "code"
+        },
+        {
+          "path": "queue.ts",
+          "line": 1,
+          "end": 9,
+          "type": "code"
+        }
+      ]
+    }
+  ]
+}

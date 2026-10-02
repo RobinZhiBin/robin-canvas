@@ -1,0 +1,14 @@
+{
+  "python-demo": {
+    "checks": 22,
+    "canvas_matches_browser": true,
+    "sha256": "2554bbc7ace525911ee71a1388ef3cd9b2c8e9b0c624c1e6718c2c52d0d229ab"
+  },
+  "forward-typescript": {
+    "checks": 23,
+    "canvas_matches_browser": true,
+    "sha256": "ee806145c488fdead5896ab6440057e0a08727000fe7060e4c36ca9a02c6e068"
+  },
+  "reviewed_implementation_unchanged": true,
+  "global_skill_link_correct": true
+}

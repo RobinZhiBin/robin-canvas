@@ -1,0 +1,31 @@
+{
+  "checks": {
+    "dynamic_view_count": true,
+    "dynamic_module_count": true,
+    "view_0": true,
+    "view_1": true,
+    "zoom_in": true,
+    "pan": true,
+    "node_details": true,
+    "source_snippet": true,
+    "trace_step": true,
+    "trace_back": true,
+    "edge_evidence": true,
+    "module_drilldown": true,
+    "symbol_evidence": true,
+    "back_navigation": true,
+    "risk_count": true,
+    "question_count": true,
+    "coverage_and_limits": true,
+    "narrow_no_overflow": true,
+    "narrow_evidence_panel": true,
+    "offline_boot": true,
+    "zero_offline_network": true,
+    "no_script_errors": true,
+    "no_external_requests": true
+  },
+  "errors": [],
+  "offline_requests": 0,
+  "snapshot_id": "912d11741f8af748ba77d2c8b3d03b8eb86565cfeab2ed82e812b66f6a15eb08",
+  "canvas_sha256": "ee806145c488fdead5896ab6440057e0a08727000fe7060e4c36ca9a02c6e068"
+}

@@ -1,0 +1,3 @@
+worker:
+  enabled: true
+  schedule_seconds: 30

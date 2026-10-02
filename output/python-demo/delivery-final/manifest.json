@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "snapshot_id": "78e2e83b489134d706019c5d72f8e750c1cd921926e20d814f99ce3036a83030",
+  "created_at": "2026-10-02T05:18:42.144135+00:00",
+  "model_sha256": "08c4aa62f04b5f630039fa37ebdc61c7a2583f28b874904c13a4d9660947f1c5",
+  "review_status": "reviewed",
+  "browser_verified": false,
+  "semantic_review_is_declaration": true,
+  "files": {
+    "architecture-canvas.html": "2554bbc7ace525911ee71a1388ef3cd9b2c8e9b0c624c1e6718c2c52d0d229ab",
+    "architecture-report.md": "edd4418e60551ccf0d5563253549c05013d2a55c22bfb20f085bdb070c2e9667",
+    "audit-model.json": "0a0dc86c1f745ac68c56ff70cac463df75b54d9b2b37d42eae91f1d48ad9dce2",
+    "canvas-data.json": "e55e3571eba47d15492c015c3aa0d46449530632cf19316fdeed537b72f32901",
+    "open-questions.md": "f10a0077946c0f610b7ed6da65000e17b4034b65eb4db926a4768f2c16ebcf98",
+    "snapshot.json": "b176303268a2df649ccae8f43e85e9733fa38eef1e5a826bba23d7062a301f31"
+  }
+}

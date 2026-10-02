@@ -1,0 +1,27 @@
+__pycache__/
+*.py[cod]
+.DS_Store
+.venv/
+.playwright-cli/
+.pytest_cache/
+output/*/browser/.playwright-cli/
+
+# Publish reviewed synthetic examples only; keep future audit output local.
+/output/*
+!/output/acceptance-v1.md
+!/output/implementation-review.md
+!/output/release-verification.json
+!/output/publication-check.md
+!/output/python-demo/
+!/output/forward-typescript/
+/output/*/delivery/
+/output/*/delivery-v2/
+/output/*/browser/
+/output/*/browser-v2/
+
+# Local credentials must never enter a public commit.
+.env
+.env.*
+!.env.example
+*.pem
+*.key

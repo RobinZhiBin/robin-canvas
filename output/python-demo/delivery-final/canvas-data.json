@@ -1,0 +1,371 @@
+{
+  "meta": {
+    "schemaVersion": 1,
+    "title": "合成受理链",
+    "summary": "仅审查隔离夹具，未运行被审项目。",
+    "snapshotId": "78e2e83b489134d706019c5d72f8e750c1cd921926e20d814f99ce3036a83030",
+    "modelSha256": "08c4aa62f04b5f630039fa37ebdc61c7a2583f28b874904c13a4d9660947f1c5",
+    "createdAt": "2026-10-02T05:09:20.710865+00:00",
+    "builtAt": "2026-10-02T05:18:42.070897+00:00",
+    "commit": null,
+    "dirty": true,
+    "review": {
+      "status": "reviewed",
+      "reviewer": "independent-agent/audit_upload",
+      "snapshot_id": "78e2e83b489134d706019c5d72f8e750c1cd921926e20d814f99ce3036a83030"
+    },
+    "runtimeStatus": "未核验运行现场",
+    "redactedLines": 0,
+    "coverage": {
+      "indexed": 3,
+      "reviewed": 2,
+      "excluded": 0
+    },
+    "limitations": [
+      "Python AST 是静态语法证据，不解析完整动态分派。",
+      "JS/TS 只提供词法候选，不声称完整函数、路由或调用图。",
+      "文件进入目录表示已索引，不表示职责和风险已审查。",
+      "未核验现场",
+      "内容复核通过仅指本次夹具范围；没有运行被审项目或验证生产现场。",
+      "图上追踪沿已审查关系导航，不是实时调用栈或完整动态调用图。",
+      "仅内嵌有引用的脱敏片段；省略不等于源文件不存在。",
+      "自动脱敏并非穷尽检查；交付前必须人工核查 HTML/JSON 的实际内容。",
+      "此文件是固定快照，不会自动读取磁盘；使用 check_drift.py 检查是否过期。"
+    ]
+  },
+  "modules": [
+    {
+      "path": "deploy.yml",
+      "sha256": "9cee836bd8322ce5de3380a3dfb5bc64ad51c63c205d63c9e6d1f08061770417",
+      "bytes": 71,
+      "lines": 4,
+      "tracked": false,
+      "id": "deploy.yml",
+      "category": "deployment",
+      "doc": "",
+      "symbols": [],
+      "imports": [],
+      "refs": [
+        {
+          "path": "deploy.yml",
+          "line": 1,
+          "end": 1
+        }
+      ],
+      "analysis_status": "indexed_only"
+    },
+    {
+      "path": "server.py",
+      "sha256": "78c24174cc0aa3475ca57b1dd00d8ec87eb6a12be6a5d87c46375f2638c4dc70",
+      "bytes": 226,
+      "lines": 8,
+      "tracked": false,
+      "id": "server.py",
+      "category": "application",
+      "doc": "Small source-only example: intake endpoint delegates to local storage.",
+      "symbols": [
+        {
+          "id": "server.py::receive",
+          "name": "receive",
+          "kind": "function",
+          "line": 5,
+          "end": 8,
+          "calls": [
+            {
+              "text": "save",
+              "refs": [
+                {
+                  "path": "server.py",
+                  "line": 8,
+                  "end": 8,
+                  "symbol": "receive"
+                }
+              ]
+            },
+            {
+              "text": "body.get",
+              "refs": [
+                {
+                  "path": "server.py",
+                  "line": 6,
+                  "end": 6,
+                  "symbol": "receive"
+                }
+              ]
+            },
+            {
+              "text": "ValueError",
+              "refs": [
+                {
+                  "path": "server.py",
+                  "line": 7,
+                  "end": 7,
+                  "symbol": "receive"
+                }
+              ]
+            }
+          ],
+          "doc": "",
+          "refs": [
+            {
+              "path": "server.py",
+              "line": 5,
+              "end": 8,
+              "symbol": "receive"
+            }
+          ]
+        }
+      ],
+      "imports": [
+        {
+          "statement": "from storage import save",
+          "targets": [
+            "storage.py"
+          ],
+          "refs": [
+            {
+              "path": "server.py",
+              "line": 2,
+              "end": 2
+            }
+          ]
+        }
+      ],
+      "refs": [
+        {
+          "path": "server.py",
+          "line": 1,
+          "end": 1
+        }
+      ],
+      "analysis_status": "reviewed",
+      "symbol_index_kind": "python-ast"
+    },
+    {
+      "path": "storage.py",
+      "sha256": "3629111f386a13b489aa82c5c71ee592a96e4687b1c7336446892b762e923eff",
+      "bytes": 176,
+      "lines": 7,
+      "tracked": false,
+      "id": "storage.py",
+      "category": "application",
+      "doc": "Append-only process memory; restarting the process loses the records.",
+      "symbols": [
+        {
+          "id": "storage.py::save",
+          "name": "save",
+          "kind": "function",
+          "line": 5,
+          "end": 7,
+          "calls": [
+            {
+              "text": "records.append",
+              "refs": [
+                {
+                  "path": "storage.py",
+                  "line": 6,
+                  "end": 6,
+                  "symbol": "save"
+                }
+              ]
+            },
+            {
+              "text": "dict",
+              "refs": [
+                {
+                  "path": "storage.py",
+                  "line": 6,
+                  "end": 6,
+                  "symbol": "save"
+                }
+              ]
+            },
+            {
+              "text": "len",
+              "refs": [
+                {
+                  "path": "storage.py",
+                  "line": 7,
+                  "end": 7,
+                  "symbol": "save"
+                }
+              ]
+            }
+          ],
+          "doc": "",
+          "refs": [
+            {
+              "path": "storage.py",
+              "line": 5,
+              "end": 7,
+              "symbol": "save"
+            }
+          ]
+        }
+      ],
+      "imports": [],
+      "refs": [
+        {
+          "path": "storage.py",
+          "line": 1,
+          "end": 1
+        }
+      ],
+      "analysis_status": "reviewed",
+      "symbol_index_kind": "python-ast"
+    }
+  ],
+  "edges": [
+    {
+      "id": "import-f9f28c1ad9c015",
+      "from": "server.py",
+      "to": "storage.py",
+      "kind": "import",
+      "label": "静态导入",
+      "detail": "源码中的导入表达式；不证明一次真实调用。",
+      "refs": [
+        {
+          "path": "server.py",
+          "line": 2,
+          "end": 2
+        }
+      ]
+    }
+  ],
+  "routes": [],
+  "limitations": [
+    "Python AST 是静态语法证据，不解析完整动态分派。",
+    "JS/TS 只提供词法候选，不声称完整函数、路由或调用图。",
+    "文件进入目录表示已索引，不表示职责和风险已审查。"
+  ],
+  "views": [
+    {
+      "id": "intake",
+      "title": "接收与保存",
+      "summary": "输入校验后同步调用内存保存。",
+      "nodes": [
+        {
+          "id": "api",
+          "label": "接收入口",
+          "kind": "api",
+          "module": "server.py",
+          "status": "confirmed",
+          "detail": "校验 reference 后调用 save。",
+          "evidence_note": "函数中有条件校验和 return save(body)。",
+          "refs": [
+            {
+              "path": "server.py",
+              "line": 5,
+              "end": 8
+            }
+          ]
+        },
+        {
+          "id": "store",
+          "label": "进程内记录",
+          "kind": "store",
+          "module": "storage.py",
+          "status": "confirmed",
+          "detail": "向列表追加一份输入字典。",
+          "evidence_note": "records 为模块列表，save 执行 append。",
+          "refs": [
+            {
+              "path": "storage.py",
+              "line": 2,
+              "end": 7
+            }
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "id": "save",
+          "from": "api",
+          "to": "store",
+          "label": "同步保存",
+          "kind": "call",
+          "relation": "direct",
+          "status": "confirmed",
+          "detail": "receive 返回 save 结果。",
+          "evidence_note": "导入绑定与实际调用共同说明目标。",
+          "refs": [
+            {
+              "path": "server.py",
+              "line": 2
+            },
+            {
+              "path": "server.py",
+              "line": 8
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "id": "F1",
+      "severity": "P1",
+      "title": "进程退出后记录不可恢复",
+      "fact": "示例只向进程内列表追加，没有持久化实现。",
+      "impact": "只在本夹具范围成立，未证明真实系统行为。",
+      "recommendation": "若业务要求重启恢复，需持久化并验证恢复。",
+      "refs": [
+        {
+          "path": "storage.py",
+          "line": 2,
+          "end": 7
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "question": "是否需要跨重启保留？",
+      "why": "决定存储契约。",
+      "owner": "business",
+      "refs": [
+        {
+          "path": "storage.py",
+          "line": 2
+        }
+      ]
+    }
+  ],
+  "sources": {
+    "server.py": {
+      "lines": 8,
+      "sha256": "78c24174cc0aa3475ca57b1dd00d8ec87eb6a12be6a5d87c46375f2638c4dc70",
+      "snippets": {
+        "1": "\"\"\"Small source-only example: intake endpoint delegates to local storage.\"\"\"",
+        "2": "from storage import save",
+        "3": "",
+        "4": "",
+        "5": "def receive(body):",
+        "6": "    if not body.get('reference'):",
+        "7": "        raise ValueError('reference required')",
+        "8": "    return save(body)"
+      },
+      "redacted_lines": 0,
+      "mode": "referenced-snippets"
+    },
+    "storage.py": {
+      "lines": 7,
+      "sha256": "3629111f386a13b489aa82c5c71ee592a96e4687b1c7336446892b762e923eff",
+      "snippets": {
+        "1": "\"\"\"Append-only process memory; restarting the process loses the records.\"\"\"",
+        "2": "records = []",
+        "3": "",
+        "4": "",
+        "5": "def save(body):",
+        "6": "    records.append(dict(body))",
+        "7": "    return {'position': len(records)}"
+      },
+      "redacted_lines": 0,
+      "mode": "referenced-snippets"
+    }
+  },
+  "scc": [],
+  "excluded": []
+}

@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "snapshot_id": "78e2e83b489134d706019c5d72f8e750c1cd921926e20d814f99ce3036a83030",
+  "created_at": "2026-10-02T05:09:20.710865+00:00",
+  "project": "python_intake",
+  "git": {
+    "head": null,
+    "dirty": true
+  },
+  "scope": {
+    "excludes": [],
+    "max_bytes": 2097152,
+    "policy": "utf8-source-config-docs-v1; untracked included; ignored/private/symlink/generated excluded"
+  },
+  "files": [
+    {
+      "path": "deploy.yml",
+      "sha256": "9cee836bd8322ce5de3380a3dfb5bc64ad51c63c205d63c9e6d1f08061770417",
+      "bytes": 71,
+      "lines": 4,
+      "tracked": false
+    },
+    {
+      "path": "server.py",
+      "sha256": "78c24174cc0aa3475ca57b1dd00d8ec87eb6a12be6a5d87c46375f2638c4dc70",
+      "bytes": 226,
+      "lines": 8,
+      "tracked": false
+    },
+    {
+      "path": "storage.py",
+      "sha256": "3629111f386a13b489aa82c5c71ee592a96e4687b1c7336446892b762e923eff",
+      "bytes": 176,
+      "lines": 7,
+      "tracked": false
+    }
+  ],
+  "excluded": [],
+  "limitations": [
+    "快照只覆盖已列文件；排除项不算已审查。",
+    "不执行项目模块，也不验证现场部署。"
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "snapshot_id": "912d11741f8af748ba77d2c8b3d03b8eb86565cfeab2ed82e812b66f6a15eb08",
+  "created_at": "2026-10-02T05:08:54.213491+00:00",
+  "project": "typescript_jobs",
+  "git": {
+    "head": null,
+    "dirty": true
+  },
+  "scope": {
+    "excludes": [],
+    "max_bytes": 2097152,
+    "policy": "utf8-source-config-docs-v1; untracked included; ignored/private/symlink/generated excluded"
+  },
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "15b73fb23741d18d8bccfd8149da38fdb79e58827c69f79692abb08022b069d3",
+      "bytes": 185,
+      "lines": 4,
+      "tracked": false
+    },
+    {
+      "path": "api.ts",
+      "sha256": "acb8d5c8c1723c640b8c195176992c2fa7d08e1e927ced649d50e30e99aab6ca",
+      "bytes": 185,
+      "lines": 6,
+      "tracked": false
+    },
+    {
+      "path": "config.yml",
+      "sha256": "f477309a0e58ee074fa1ba543fcc2efdd2008bf929e6c68290847495acd40d9f",
+      "bytes": 47,
+      "lines": 3,
+      "tracked": false
+    },
+    {
+      "path": "queue.ts",
+      "sha256": "02ad5ab9ac5d4507ba84344bae01a7baf03c05a67cc78b1dcec4aeaff131103c",
+      "bytes": 212,
+      "lines": 10,
+      "tracked": false
+    },
+    {
+      "path": "worker.ts",
+      "sha256": "2dac8bc20804ccfd388fb47472ab6a542a9a5dec82a857f7a108aed640ef3b2e",
+      "bytes": 163,
+      "lines": 6,
+      "tracked": false
+    }
+  ],
+  "excluded": [],
+  "limitations": [
+    "快照只覆盖已列文件；排除项不算已审查。",
+    "不执行项目模块，也不验证现场部署。"
+  ]
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "架构剖析与交互画布"
+  short_description: "基于源码证据审查架构、追踪业务链路并生成可下钻的离线画布"
+  default_prompt: "使用 $architecture-audit-canvas 分析当前项目，生成可溯源的交互画布、架构报告与待确认清单。"
